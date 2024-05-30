@@ -27,22 +27,31 @@
         "uid": "trlxrdZVk"
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
+        "h": 6,
+        "w": 3,
         "x": 0,
         "y": 0
       },
       "id": 1,
       "options": {
-        "duration": 500,
-        "end": 100,
+        "counterColor": "text",
+        "counterFontSize": 16,
+        "counterTop": 0,
+        "decimalPlaces": 0,
+        "duration": 2,
+        "end": "query",
+        "endNumber": 100,
+        "prefix": "",
         "reducer": [
           "last"
         ],
         "start": 0,
-        "title": "Title"
+        "suffix": "",
+        "text": "Title",
+        "titleColor": "text",
+        "titleFontSize": 16,
+        "titleTop": 0
       },
-      "title": "Panel Title",
       "type": "gohardev-countup-panel"
     }
   ],
@@ -60,6 +69,6 @@
   "timezone": "",
   "title": "Provisioned countup dashboard",
   "uid": "a538aeff-5a8a-42a5-901c-938d896fdd6f",
-  "version": 3,
+  "version": 1,
   "weekStart": ""
 }
