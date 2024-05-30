@@ -1,25 +1,50 @@
 import React, { useEffect, useRef } from 'react';
-import { PanelProps } from '@grafana/data';
+import { Field, PanelProps, Vector, reduceField } from '@grafana/data';
 import { SimpleOptions } from 'types';
 import { CountUp } from 'countup.js';
 import { css} from '@emotion/css'
+import { DataSelectOptions } from './DataSelect';
+
 interface Props extends PanelProps<SimpleOptions> {}
 
+let previousData = 0;
 export const SimplePanel: React.FC<Props> = ({ options, data, width, height, fieldConfig, id }) => {
- 
+  let myfield: Field<any, any[]>;
+  if (typeof(options.dataSelect) !== "undefined"){
+    const queryRefId = options.dataSelect.split(":") [0]
+    const fieldName = options.dataSelect.split(":") [1]
+    const filteredQueries = data.series.filter((q) => q.refId === queryRefId)
+    if (filteredQueries.length > 0){
+      const query = filteredQueries[0]
+      const filteredFields = query.fields.filter((f) => f.name === fieldName)
+      if (filteredFields.length > 0){
+        myfield = filteredFields[0]
+      }
+    }
+  } else {
+    const options = DataSelectOptions(data.series)
+    if (options.length > 0){
+      const queryRefId = options[0].value?.split(":") [0]
+      const fieldName = options[0].value?.split(":") [1]
+      const query = data.series.filter((q) => q.refId === queryRefId)[0]
+      const filteredFields = query.fields.filter((f) => f.name === fieldName)
+      myfield = filteredFields[0]
+    }
+  }
   const countUpRef = useRef<HTMLSpanElement>(null);
-  console.log(data.series[0].fields[0].values[0])
 
+  const standardCalcs = reduceField({ field: myfield!, reducers: options.reducer })
+  const newValue = standardCalcs[options.reducer[0]]
   useEffect(() => {
     if (countUpRef.current) {
-      const countUp = new CountUp(countUpRef.current, options.end, {
-        // startVal: options.start,
+      const countUp = new CountUp(countUpRef.current, newValue, {
+        startVal: previousData,
         // duration: options.duration,
         // delay: options.delay,
         // suffix: options.suffix,
         // prefix: options.prefix,
       });
-
+    
       if (!countUp.error) {
         countUp.start();
       } else {
